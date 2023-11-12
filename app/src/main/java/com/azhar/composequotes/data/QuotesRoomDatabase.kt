@@ -19,7 +19,7 @@ abstract class QuotesRoomDatabase: RoomDatabase() {
         private var INSTANCE:QuotesRoomDatabase?=null
         fun getDataBase(context:Context): QuotesRoomDatabase {
             return INSTANCE?: synchronized(this){
-                val instance= Room.databaseBuilder(context.applicationContext,QuotesRoomDatabase::class.java,"quotes.db").createFromAsset("quotes.db").build()
+                val instance= Room.databaseBuilder(context.applicationContext,QuotesRoomDatabase::class.java,"qq.db").createFromAsset("quotes.db").build()
                 INSTANCE=instance
                 instance
             }

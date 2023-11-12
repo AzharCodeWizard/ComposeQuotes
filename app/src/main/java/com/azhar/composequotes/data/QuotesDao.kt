@@ -1,5 +1,6 @@
 package com.azhar.composequotes.data
 
+import androidx.room.Dao
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
@@ -8,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 * @project ComposeQuotes
 * @author  azhar
 */
-
+@Dao
 interface QuotesDao {
-    @Query("SELECT * from allcategories ORDER By noofquotes ASC")
+    @Query("SELECT * from allcategories ORDER By quoteId ASC")
     fun getAllQuotes(): Flow<List<Quotes>>
 }
