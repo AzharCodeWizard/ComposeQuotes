@@ -19,12 +19,12 @@ import com.azhar.composequotes.scenes.DetailsScreen
 import com.azhar.composequotes.ui.theme.ComposeQuotesTheme
 
 /*
-* @created 11/11/2023 -7:58 PM
+* @created 11/26/2023 -4:10 PM
 * @project ComposeQuotes
 * @author  azhar
 */
 class MainActivity : ComponentActivity() {
-    private val viewmodel: QuotesViewModel by viewModels {
+    private val viewModel: QuotesViewModel by viewModels {
         QuotesViewModelFactory(
             QuotesRepository(
                 QuotesRoomDatabase.getDataBase(this@MainActivity).quotesDao()
@@ -51,12 +51,11 @@ class MainActivity : ComponentActivity() {
     private fun HomeScreen() {
         val controller = rememberNavController()
         NavHost(navController = controller, startDestination = Screens.CATEGORY.name) {
-            composable(route = Screens.CATEGORY.name.plus("/{quote}")) {
-                CategorySelectionScreen(controller, viewmodel)
+            composable(route = Screens.CATEGORY.name) {
+                CategorySelectionScreen(controller, viewModel)
             }
             composable(route = Screens.DETAILS.name.plus("/{quote}")) {
-                DetailsScreen(controller
-                )
+                DetailsScreen(controller)
             }
         }
     }
