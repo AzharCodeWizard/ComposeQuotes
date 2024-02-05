@@ -2,6 +2,7 @@ package com.azhar.composequotes.data
 
 import android.os.Parcelable
 import androidx.annotation.NonNull
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -14,6 +15,7 @@ import kotlinx.parcelize.Parcelize
 * @author  azhar
 */
 @Parcelize
+@Immutable
 @Entity(tableName = "allcategories")
 data class Quotes(
     @ColumnInfo(name = "category")

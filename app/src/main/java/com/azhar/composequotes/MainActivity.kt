@@ -58,6 +58,7 @@ class MainActivity : ComponentActivity() {
                 DetailsScreen(controller)
             }
         }
+
     }
 
 

@@ -1,22 +1,29 @@
 package com.azhar.composequotes.scenes
 
+import android.os.Bundle
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCompositionContext
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,15 +41,17 @@ import com.azhar.composequotes.Screens
 import com.azhar.composequotes.data.Quotes
 import kotlin.random.Random
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*
+* @created 11/11/2023 -8:09 PM
+* @project ComposeQuotes
+* @author  azhar
+*/
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CategorySelectionScreen(
-    controller: NavHostController? = null,
-    viewModel: QuotesViewModel? = null
+    controller: NavHostController? = null, viewModel: QuotesViewModel? = null
 ) {
-    val collectAsState = viewModel?.getAllQuotes()?.collectAsState(initial = arrayListOf())
-    var selectedQuotes by remember { mutableStateOf<Quotes?>(null) }
+    val listQuotes = viewModel?.getAllQuotes()?.collectAsState(initial = arrayListOf())
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         contentPadding = PaddingValues(10.dp),
@@ -50,42 +59,62 @@ fun CategorySelectionScreen(
             .fillMaxWidth(1f)
             .background(Color.White),
         content = {
-            this.item {
-                collectAsState?.value?.forEach {
-                    Card(modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(1f)
-                        .height(150.dp)
-                        .fillParentMaxWidth(1f),
-                        colors = CardDefaults.cardColors(containerColor = randomColor()),
-                        elevation = CardDefaults.cardElevation(5.dp),
-                        onClick = onItemClick(controller =controller, it =it, onclick ={selectedQuotes=it})
-                    ) {
-                        Text(
-                            text = it.quote.toString(),
-                            color = Color.White,
-                            lineHeight = 35.sp,
-                            textAlign = TextAlign.Center,
-                            fontSize = 30.sp, letterSpacing = TextUnit(1f, TextUnitType.Sp),
-                            fontFamily = FontFamily.Serif,
-                            modifier = Modifier
-                                .align(alignment = Alignment.CenterHorizontally)
-                                .padding(8.dp)
-                        )
-                    }
+            listQuotes?.value?.let { quotes ->
+                items(quotes) {
+                    QuotesItem(it = it, controller = controller)
                 }
             }
         })
+
 }
 
 @Composable
-private fun onItemClick(
-    controller: NavHostController?,
-    it: Quotes, onclick: () -> Unit
-): () -> Unit = { controller?.navigate(Screens.DETAILS.name.plus("/${it.quote}")) }
+private fun QuotesItem(
+    it: Quotes, controller: NavHostController?
+) {
+    val rememberColor = rememberSaveable(stateSaver = ColorSaver) {
+        mutableStateOf(randomColor())
+    }
+
+    Card(modifier = Modifier
+        .clickable {
+            controller?.navigate(route = Screens.DETAILS.name.plus("/${it.quote}"))
+        }
+        .padding(8.dp)
+        .fillMaxWidth(1f)
+        .height(150.dp),
+        colors = CardDefaults.cardColors(containerColor = rememberColor.value),
+        elevation = CardDefaults.cardElevation(5.dp)) {
+        Text(
+            text = it.quote.toString(),
+            color = Color.White,
+            lineHeight = 35.sp,
+            textAlign = TextAlign.Center,
+            fontSize = 30.sp,
+            letterSpacing = TextUnit(1f, TextUnitType.Sp),
+            fontFamily = FontFamily.Serif,
+            modifier = Modifier
+                .align(alignment = Alignment.CenterHorizontally)
+                .padding(8.dp)
+        )
+
+    }
+
+}
 
 fun randomColor() = Color(
-    Random.nextInt(100, 200),
-    Random.nextInt(100, 200),
-    Random.nextInt(100, 200)
+    Random.nextInt(100, 200), Random.nextInt(100, 200), Random.nextInt(100, 200)
 )
+
+object ColorSaver : Saver<Color, Bundle> {
+    override fun restore(value: Bundle): Color? {
+        val colorLong = value.getString("color")?.toULong()
+        return colorLong?.let { Color(it) }
+    }
+
+    override fun SaverScope.save(value: Color): Bundle {
+        val bundle = Bundle()
+        bundle.putString("color", value.value.toString())
+        return bundle
+    }
+}
