@@ -11,6 +11,6 @@ import kotlinx.coroutines.flow.Flow
 */
 @Dao
 interface QuotesDao {
-    @Query("SELECT * from allcategories  ORDER By quoteId ASC")
+    @Query("SELECT * from allcategories where quote is not null  ORDER By quoteId ASC")
     fun getAllQuotes(): Flow<List<Quotes>>
 }

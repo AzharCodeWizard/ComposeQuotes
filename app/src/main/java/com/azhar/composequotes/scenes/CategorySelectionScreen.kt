@@ -1,18 +1,28 @@
 package com.azhar.composequotes.scenes
 
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +51,7 @@ import com.azhar.composequotes.Screens
 import com.azhar.composequotes.data.Quotes
 import kotlin.random.Random
 
-/*
+/**
 * @created 11/11/2023 -8:09 PM
 * @project ComposeQuotes
 * @author  azhar
@@ -68,9 +78,10 @@ fun CategorySelectionScreen(
 
 }
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun QuotesItem(
-    it: Quotes, controller: NavHostController?
+    it: Quotes? = null, controller: NavHostController? = null
 ) {
     val rememberColor = rememberSaveable(stateSaver = ColorSaver) {
         mutableStateOf(randomColor())
@@ -78,25 +89,33 @@ private fun QuotesItem(
 
     Card(modifier = Modifier
         .clickable {
-            controller?.navigate(route = Screens.DETAILS.name.plus("/${it.quote}"))
+            controller?.navigate(route = Screens.DETAILS.name.plus("/${it?.quote}"))
         }
         .padding(8.dp)
         .fillMaxWidth(1f)
         .height(150.dp),
         colors = CardDefaults.cardColors(containerColor = rememberColor.value),
         elevation = CardDefaults.cardElevation(5.dp)) {
-        Text(
-            text = it.quote.toString(),
-            color = Color.White,
-            lineHeight = 35.sp,
-            textAlign = TextAlign.Center,
-            fontSize = 30.sp,
-            letterSpacing = TextUnit(1f, TextUnitType.Sp),
-            fontFamily = FontFamily.Serif,
+        Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .padding(8.dp)
-        )
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            Text(
+                text = it?.quote.toString(),
+                color = Color.White,
+                lineHeight = 35.sp,
+                textAlign = TextAlign.Center,
+                fontSize = 30.sp,
+                letterSpacing = TextUnit(1f, TextUnitType.Sp),
+                fontFamily = FontFamily.Serif,
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(8.dp)
+            )
+        }
+
 
     }
 
