@@ -52,10 +52,10 @@ import com.azhar.composequotes.data.Quotes
 import kotlin.random.Random
 
 /**
-* @created 11/11/2023 -8:09 PM
-* @project ComposeQuotes
-* @author  azhar
-*/
+ * @created 11/11/2023 -8:09 PM
+ * @project ComposeQuotes
+ * @author  azhar
+ */
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CategorySelectionScreen(
@@ -107,7 +107,7 @@ private fun QuotesItem(
                 color = Color.White,
                 lineHeight = 35.sp,
                 textAlign = TextAlign.Center,
-                fontSize = 30.sp,
+                fontSize = 30.sp, maxLines = 3,
                 letterSpacing = TextUnit(1f, TextUnitType.Sp),
                 fontFamily = FontFamily.Serif,
                 modifier = Modifier

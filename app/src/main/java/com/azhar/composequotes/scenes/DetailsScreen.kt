@@ -1,7 +1,11 @@
 package com.azhar.composequotes.scenes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +24,7 @@ import com.azhar.composequotes.data.Quotes
 @Preview(showBackground = true, showSystemUi = true)
 fun DetailsScreen(controller: NavHostController? = null) {
     val quotes = controller?.currentBackStackEntry?.arguments?.getString("quote")
-    Column(Modifier.background(Color.White)) {
+    Column( verticalArrangement = Arrangement.Center, modifier = Modifier.background(Color.White).fillMaxHeight().fillMaxWidth()) {
         Text(modifier = Modifier.padding(20.dp), lineHeight = TextUnit(40f,TextUnitType.Sp), fontFamily = FontFamily.Serif,
             fontSize = 40.sp, text = quotes ?: "", color = Color.Black, letterSpacing = TextUnit(
                 1f,
