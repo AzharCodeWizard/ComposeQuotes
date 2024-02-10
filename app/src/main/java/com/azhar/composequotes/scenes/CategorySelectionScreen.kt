@@ -83,7 +83,7 @@ private fun QuotesItem(
         }
         .padding(8.dp)
         .fillMaxWidth(1f)
-        .height(150.dp),
+        .height(180.dp),
         colors = CardDefaults.cardColors(containerColor = rememberColor.value),
         elevation = CardDefaults.cardElevation(5.dp)) {
         Column(
