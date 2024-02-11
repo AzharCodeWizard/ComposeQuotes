@@ -17,7 +17,7 @@ import java.lang.IllegalArgumentException
 */
 
 class QuotesViewModel(private val quotesRepository: QuotesRepository) : ViewModel() {
-    private var onTextChange = MutableLiveData<String>()
+    private var onTextChange = MutableLiveData("")
     fun getAllQuotes(): Flow<List<Quotes>> {
         return quotesRepository.quotes
     }

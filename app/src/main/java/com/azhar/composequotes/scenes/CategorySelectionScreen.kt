@@ -52,7 +52,6 @@ fun CategorySelectionScreen(
 ) {
     val searchString = viewModel?.onChangeTextObserver()?.observeAsState()
     val listQuotes = viewModel?.getAllQuotes()?.collectAsState(initial = arrayListOf())
-    val filteredList =listQuotes?.value?.filter { (it.quote?:"").contains(searchString?.value?:"") }?.toMutableStateList()
 
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -61,17 +60,24 @@ fun CategorySelectionScreen(
             .fillMaxWidth(1f)
             .background(Color.White),
         content = {
-            if (searchString?.value?.isNotBlank() == true){
-                items(filteredList?: arrayListOf()) {
-                    QuotesItem(it = it, controller = controller)
+//            if (searchString?.value?.isNotBlank() == true){
+//                items(filteredList?: arrayListOf()) {
+//                    QuotesItem(it = it, controller = controller)
+//                }
+//            }else
+
+            (listQuotes?.value ?: arrayListOf()).filter {
+                searchString?.value?.isNotBlank() == true && (it.quote ?: "").contains(
+                    searchString.value ?: "",
+                    true
+                )
+            }.ifEmpty { if ((searchString?.value?.isBlank() == true)) listQuotes?.value?: arrayListOf() else arrayListOf() }
+                .let { quotes ->
+                    items(quotes) {
+                        QuotesItem(it = it, controller = controller)
+                    }
                 }
-            }else{
-             listQuotes?.value?.let { quotes ->
-                items(quotes) {
-                    QuotesItem(it = it, controller = controller)
-                }
-            }
-            }
+
         })
 
 }
