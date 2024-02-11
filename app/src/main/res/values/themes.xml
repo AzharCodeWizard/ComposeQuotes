@@ -2,4 +2,14 @@
 <resources>
 
     <style name="Theme.ComposeQuotes" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SplashScreen.MySplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
+        <item name="android:toolbarStyle">@null</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowSplashScreenBehavior">icon_preferred</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="postSplashScreenTheme">@style/Theme.ComposeQuotes</item>
+    </style>
 </resources>

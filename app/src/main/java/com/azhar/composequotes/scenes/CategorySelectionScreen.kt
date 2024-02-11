@@ -1,8 +1,14 @@
 package com.azhar.composequotes.scenes
 
 import android.os.Bundle
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -23,21 +28,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.FractionalThreshold
+import androidx.wear.compose.material.swipeable
 import com.azhar.composequotes.QuotesViewModel
 import com.azhar.composequotes.data.Quotes
 import com.azhar.composequotes.widgets.CardContents
+import java.util.Collections
 import kotlin.random.Random
 
 /**
@@ -52,6 +61,7 @@ fun CategorySelectionScreen(
 ) {
     val searchString = viewModel?.onChangeTextObserver()?.observeAsState()
     val listQuotes = viewModel?.getAllQuotes()?.collectAsState(initial = arrayListOf())
+    Collections.nCopies(5000,Quotes("Inspirational","Hutiya",1))
 
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -82,6 +92,7 @@ fun CategorySelectionScreen(
 
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun QuotesItem(
@@ -132,7 +143,7 @@ private fun QuotesItem(
 }
 
 fun randomColor() = Color(
-    Random.nextInt(150, 200), Random.nextInt(150, 200), Random.nextInt(100, 200)
+    Random.nextInt(1, 150),  Random.nextInt(1, 150),  Random.nextInt(1, 150)
 )
 
 object ColorSaver : Saver<Color, Bundle> {

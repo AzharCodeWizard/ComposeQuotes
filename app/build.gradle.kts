@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.azhar.composequotes"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -49,7 +49,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    buildToolsVersion = "33.0.2"
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.wear.compose:compose-material:1.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -73,5 +74,7 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.1")
     annotationProcessor ("androidx.room:room-compiler:2.6.1")
     kapt ("androidx.room:room-compiler:2.6.1")
+    implementation( "androidx.core:core-splashscreen:1.0.1")
+
 
 }
