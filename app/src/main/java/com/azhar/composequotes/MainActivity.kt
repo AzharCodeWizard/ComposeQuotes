@@ -1,50 +1,52 @@
 package com.azhar.composequotes
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Shapes
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -54,9 +56,10 @@ import com.azhar.composequotes.data.repository.QuotesRepository
 import com.azhar.composequotes.scenes.CategorySelectionScreen
 import com.azhar.composequotes.scenes.DetailsScreen
 import com.azhar.composequotes.ui.theme.ComposeQuotesTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-/*
+/**
 * @created 11/26/2023 -4:10 PM
 * @project ComposeQuotes
 * @author  azhar
@@ -75,6 +78,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val sheetState = rememberModalBottomSheetState()
+            val searchQuery = rememberSaveable { mutableStateOf("") }
             val scope = rememberCoroutineScope()
             var showBottomSheet by remember { mutableStateOf(false) }
             val isDarkThemEnabled =
@@ -83,25 +87,19 @@ class MainActivity : ComponentActivity() {
                 }
 
             if (showBottomSheet) {
-                ModalBottomSheet(modifier = Modifier.height(height = 300.dp),
+                ModalBottomSheet(
+                    modifier = Modifier.height(height = 300.dp),
                     onDismissRequest = {
                         showBottomSheet = false
                     },
-                    sheetState = sheetState
+                    sheetState = sheetState,
                 ) {
-                    // Sheet content
-                    Button(onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet = false
-                            }
-                        }
-                    }) {
-                        Text("Hide bottom sheet")
-                    }
+                    AboutMe(scope, sheetState) { showBottomSheet = it }
+
                 }
             }
             MaterialTheme(colorScheme = if (isDarkThemEnabled.value) darkColorScheme() else lightColorScheme(),
+
                 content = {
                     ComposeQuotesTheme {
                         // A surface container using the 'background' color from the theme
@@ -110,13 +108,33 @@ class MainActivity : ComponentActivity() {
                             color = MaterialTheme.colorScheme.background,
                         ) {
                             Scaffold(topBar = {
+                                Column {
+                                    TopAppBar(title = {Text(text = "Quotes App", color = Color.Black)},colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.LightGray),)
+                                    TextField(minLines = 1, maxLines = 1,
+                                        value = searchQuery.value,
+                                        onValueChange = {
+                                            searchQuery.value =
+                                                it;viewModel.searchQuotes(searchQuery.value)
+                                        },
+                                        label = {
+                                            Text(text = "Search Quotes")
+                                        },
+                                        modifier = Modifier
+                                            .padding(16.dp)
+                                            .fillMaxWidth())
+                                }
+
 
                             }, floatingActionButton = {
-                                FloatingActionButton(shape = CircleShape, onClick = {
-                                    showBottomSheet=showBottomSheet.not()
+                                FloatingActionButton(containerColor = Color.LightGray,shape = CircleShape, onClick = {
+                                    showBottomSheet = showBottomSheet.not()
                                     isDarkThemEnabled.value = !isDarkThemEnabled.value
                                 }) {
-                                    Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                                    Icon(tint = Color.White,
+                                        imageVector = Icons.Default.AccountBox,
+                                        contentDescription = ""
+                                    )
+
                                 }
                             }) {
                                 Surface(
@@ -137,6 +155,47 @@ class MainActivity : ComponentActivity() {
         }
 
 
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun AboutMe(
+        scope: CoroutineScope? = null,
+        sheetState: SheetState? = null,
+        showBottomSheet: (Boolean) -> Unit
+    ) {
+
+        Column(
+            horizontalAlignment = Alignment.Start, modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(10.dp)
+                .verticalScroll(rememberScrollState(), enabled = true)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.azhar),
+                contentDescription = "",
+                modifier = Modifier.clip(
+                    CircleShape
+                )
+            )
+            Text(text = """Azhar (Mohammad Azahruddin Ansari) Ansari 
+ (He/Him)
+Senior Software Engineer @ Bharti Airtel | Airtel Digital (Android Developer l Java | Kotlin | Flutter | Jetpack compose) | Follow For Android Updates
+Talks about #kmm, #kotlin, #android, #compose, and #javadevelopment""", modifier = Modifier.padding(start = 10.dp))
+            // Sheet content
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),onClick = {
+                scope?.launch { sheetState?.hide() }?.invokeOnCompletion {
+                    if (sheetState?.isVisible?.not() == true) {
+                        showBottomSheet(false)
+                    }
+                }
+            }) {
+                Text("Close")
+            }
+        }
     }
 
     @Composable

@@ -2,12 +2,15 @@ package com.azhar.composequotes.widgets
 
 import android.widget.ImageButton
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -22,6 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.azhar.composequotes.R
+import com.azhar.composequotes.ui.theme.colorBlack
+import com.azhar.composequotes.ui.theme.colorWhite
 
 @Preview(showBackground = true, showSystemUi = true)
     @Composable
@@ -29,28 +34,28 @@ import com.azhar.composequotes.R
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight().background(color = colorBlack),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             TextButton(onClick = { /*TODO*/ }) {
-                Image(painter = painterResource(id = R.drawable.copy), contentDescription = "")
+                Image(painter = painterResource(id = R.drawable.share), contentDescription = "", modifier = Modifier.width(24.dp).height(24.dp))
                 Spacer(modifier=Modifier.padding(1.dp))
-                Text(text = "Copy")
+                Text(text = "Copy", color = colorWhite)
             }
             TextButton(onClick = { /*TODO*/ }) {
-                Image(painter = painterResource(id = R.drawable.download), contentDescription = "")
-                Text(text = "Save")
+                Image(painter = painterResource(id = R.drawable.download), contentDescription = "",modifier = Modifier.width(24.dp).height(24.dp))
+                Text(text = "Save", color = colorWhite)
 
             }
             TextButton(onClick = { /*TODO*/ }) {
-                Image(painter =  painterResource(id = R.drawable.share), contentDescription = "")
-                Text(text = "Share")
+                Image(painter =  painterResource(id = android.R.drawable.ic_menu_share), contentDescription = "",modifier = Modifier.width(24.dp).height(24.dp))
+                Text(text = "Share", color = colorWhite)
 
 
             }
             TextButton(onClick = { /*TODO*/ }) {
-                Image(painter =  painterResource(id = R.drawable.delete), contentDescription = "")
-                Text(text = "Delete")
+                Image(painter =  painterResource(id = android.R.drawable.ic_delete), contentDescription = "",modifier = Modifier.width(24.dp).height(24.dp))
+                Text(text = "Delete", color = colorWhite)
 
 
             }

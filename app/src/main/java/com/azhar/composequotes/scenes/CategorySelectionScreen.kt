@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -17,10 +18,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,18 +50,27 @@ import kotlin.random.Random
 fun CategorySelectionScreen(
     controller: NavHostController? = null, viewModel: QuotesViewModel? = null
 ) {
+    val searchString = viewModel?.onChangeTextObserver()?.observeAsState()
     val listQuotes = viewModel?.getAllQuotes()?.collectAsState(initial = arrayListOf())
+    val filteredList =listQuotes?.value?.filter { (it.quote?:"").contains(searchString?.value?:"") }?.toMutableStateList()
+
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         contentPadding = PaddingValues(10.dp),
         modifier = Modifier
             .fillMaxWidth(1f)
             .background(Color.White),
         content = {
-            listQuotes?.value?.let { quotes ->
+            if (searchString?.value?.isNotBlank() == true){
+                items(filteredList?: arrayListOf()) {
+                    QuotesItem(it = it, controller = controller)
+                }
+            }else{
+             listQuotes?.value?.let { quotes ->
                 items(quotes) {
                     QuotesItem(it = it, controller = controller)
                 }
+            }
             }
         })
 
@@ -75,14 +87,12 @@ private fun QuotesItem(
     val expansionCard = rememberSaveable {
         mutableStateOf(false)
     }
-
     Card(modifier = Modifier
         .clickable {
-            expansionCard.value=expansionCard.value.not()
-            rememberColor.value = randomColor()
+//            expansionCard.value = expansionCard.value.not()
         }
         .padding(8.dp)
-        .fillMaxWidth(1f)
+        .fillMaxWidth()
         .height(180.dp),
         colors = CardDefaults.cardColors(containerColor = rememberColor.value),
         elevation = CardDefaults.cardElevation(5.dp)) {
@@ -97,7 +107,7 @@ private fun QuotesItem(
                 color = Color.White,
                 lineHeight = 35.sp,
                 textAlign = TextAlign.Center,
-                fontSize = 30.sp, maxLines = 3,
+                fontSize = 30.sp, maxLines = 5,
                 letterSpacing = TextUnit(1f, TextUnitType.Sp),
                 fontFamily = FontFamily.Serif,
                 modifier = Modifier
@@ -107,8 +117,9 @@ private fun QuotesItem(
             if (expansionCard.value) {
                 CardContents()
             }
-        }
 
+
+        }
 
     }
 
